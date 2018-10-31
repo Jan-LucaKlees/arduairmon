@@ -36,46 +36,40 @@ void loop(){
     json["millis"] = millis();
 
     // create array for sensors
-    JsonArray& sensorJson = json.createNestedArray("sensors");
+    JsonObject& sensorJson = json.createNestedObject("sensors");
 
     // humidity 1
-    JsonObject& hum1Json = sensorJson.createNestedObject();
-    hum1Json["id"] = "rel_hum1_1";
+    JsonObject& hum1Json = sensorJson.createNestedObject("rel_hum_1");
     hum1Json["label"] = "Relative Humidity";
     hum1Json["value"] = dht1.readHumidity();
     hum1Json["unit"] = "%";
 
     // humidity 2
-    JsonObject& hum2Json = sensorJson.createNestedObject();
-    hum2Json["id"] = "rel_hum1_2";
+    JsonObject& hum2Json = sensorJson.createNestedObject("rel_hum_2");
     hum2Json["label"] = "Relative Humidity";
     hum2Json["value"] = dht2.readHumidity();
     hum2Json["unit"] = "%";
 
     // temperature 1
-    JsonObject& temp1Json = sensorJson.createNestedObject();
-    temp1Json["id"] = "temp_1";
+    JsonObject& temp1Json = sensorJson.createNestedObject("temp_1");
     temp1Json["label"] = "Temprature";
     temp1Json["value"] = dht1.readTemperature();
     temp1Json["unit"] = "C";
 
      // temperature 2
-    JsonObject& temp2Json = sensorJson.createNestedObject();
-    temp2Json["id"] = "temp_2";
+    JsonObject& temp2Json = sensorJson.createNestedObject("temp_2");
     temp2Json["label"] = "Temprature";
     temp2Json["value"] = dht2.readTemperature();
     temp2Json["unit"] = "C";
 
     // pressure
-    JsonObject& pressureJson = sensorJson.createNestedObject();
-    pressureJson["id"] = "air_pressure";
+    JsonObject& pressureJson = sensorJson.createNestedObject("air_pressure");
     pressureJson["label"] = "Barometric Air Pressure";
     pressureJson["value"] = mpx4115a.readKPa();
     pressureJson["unit"] = "kPa";
 
     // Vcc
-    JsonObject& vccJson = sensorJson.createNestedObject();
-    vccJson["id"] = "vcc";
+    JsonObject& vccJson = sensorJson.createNestedObject("vcc");
     vccJson["label"] = "Vcc";
     vccJson["value"] = mpx4115a.readVcc();
     vccJson["unit"] = "V";
