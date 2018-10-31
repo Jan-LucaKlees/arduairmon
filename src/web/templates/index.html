@@ -58,15 +58,23 @@
 							}
 						}],
 						yAxes: [{
-							type: 'linear', 
+							type: 'linear',
 							display: true,
 							position: 'left',
 							id: 'temp-axis',
+							ticks: {
+								min: -5,
+								max: 45
+							},
 						}, {
 							type: 'linear',
 							display: true,
 							position: 'right',
 							id: 'hum-axis',
+							ticks: {
+								min: 0,
+								max: 100
+							},
 
 							gridLines: {
 								drawOnChartArea: false,
