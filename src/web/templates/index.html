@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Title of the document</title>
+	</head>
+
+	<body>
+		<canvas id="myChart"></canvas>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+		<script>
+		var timeFormat = 'YYYY-MM-DD HH:mm:ss.SSSSSS';
+			var ctx = document.getElementById('myChart').getContext('2d');
+			var chart = new Chart(ctx, {
+				// The type of chart we want to create
+				type: 'line',
+
+				// The data for our dataset
+				data: {
+					labels: {{ dates | safe }},
+					datasets: [{
+						label: "Temperature",
+						fill: false,
+						backgroundColor: 'rgb(255, 99, 132)',
+						borderColor: 'rgb(255, 99, 132)',
+						data: {{ temps }},
+						yAxisID: 'temp-axis'
+					},{
+						label: "relative Humidity",
+						fill: false,
+						backgroundColor: 'rgb(99, 132, 255)',
+						borderColor: 'rgb(99, 132, 255)',
+						data: {{ hums }},
+						yAxisID: 'hum-axis'
+					}]
+				},
+
+				// Configuration options go here
+				options: {
+					responsive: true,
+					hoverMode: 'index',
+					stacked: false,
+					title: {
+						display: true,
+						text: 'Temperature and reltaive Humidity'
+					},
+					scales: {
+						xAxes: [{
+							type: 'time',
+							time: {
+								format: timeFormat,
+								// round: 'day'
+								tooltipFormat: 'll HH:mm'
+							},
+							scaleLabel: {
+								display: true,
+								labelString: 'Date'
+							}
+						}],
+						yAxes: [{
+							type: 'linear', 
+							display: true,
+							position: 'left',
+							id: 'temp-axis',
+						}, {
+							type: 'linear',
+							display: true,
+							position: 'right',
+							id: 'hum-axis',
+
+							gridLines: {
+								drawOnChartArea: false,
+							},
+						}],
+					}
+				}
+			});
+		</script>
+	</body>
+
+</html>
