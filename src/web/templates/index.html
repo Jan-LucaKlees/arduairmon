@@ -15,6 +15,30 @@
 			};
 
 			var timeFormat = '{{ DATE_FORMAT }}';
+
+			function movingAverageFilter( arr, avg_length ) {
+				if( avg_length <= 1 ) return arr;
+				if( arr.length <= 1 ) return arr;
+
+				// prepare array, add left padding
+				let padding = Array( avg_length -1 ).fill( arr[0] );
+				let padded_arr = padding.concat( arr );
+
+				return _movingAverageFilter( padded_arr, avg_length);
+			}
+
+			function _movingAverageFilter( arr, avg_length ) {
+				if( arr.length < avg_length  ) {
+					return [];
+				}
+
+				let avg_arr = arr.slice( -avg_length );
+				let avg = avg_arr.reduce( ( a, b ) => a + b, 0 ) / avg_arr.length;
+
+				let next_arr = arr.slice( 0, -1 );
+
+				return _movingAverageFilter( next_arr, avg_length ).concat( [ avg ] );
+			}
 		</script>
 	</head>
 
@@ -125,7 +149,81 @@
 						console.error( err );
 					})
 			}
+
 		</script>
+
+		<canvas id="temperature_smoothing"></canvas>
+		<script>
+			let ctx_smooth = document.getElementById('temperature_smoothing').getContext('2d');
+			let chart_smooth = new Chart(ctx_smooth, {
+				type: 'line',
+				data: {
+					labels: rawData.date.slice( -60 ),
+					datasets: [{
+						label: "Temperature",
+						fill: false,
+						backgroundColor: 'rgb(255, 99, 132)',
+						borderColor: 'rgb(255, 99, 132)',
+						data: rawData.temperature.slice( -60 ),
+						pointRadius: 0,
+						fill: false,
+						lineTension: 0,
+						borderWidth: 2
+					},{
+						label: "Moving Average",
+						fill: false,
+						backgroundColor: 'rgb(99, 255, 132)',
+						borderColor: 'rgb(99, 255, 132)',
+						data: movingAverageFilter( rawData.temperature.slice( -60 ), 20),
+						pointRadius: 0,
+						fill: false,
+						lineTension: 0,
+						borderWidth: 2
+					},{
+						label: "Moving Average 2x",
+						fill: false,
+						backgroundColor: 'rgb(99, 132, 255)',
+						borderColor: 'rgb(99, 132, 255)',
+						data: movingAverageFilter( movingAverageFilter( rawData.temperature.slice( -60 ), 6), 6),
+						pointRadius: 0,
+						fill: false,
+						lineTension: 0,
+						borderWidth: 2
+					}]
+				},
+
+				// Configuration options go here
+				options: {
+					responsive: true,
+					hoverMode: 'index',
+					stacked: false,
+					title: {
+						display: true,
+						text: 'Temperature Smoothing'
+					},
+					scales: {
+						xAxes: [{
+							type: 'time',
+							time: {
+								format: timeFormat,
+								tooltipFormat: 'll HH:mm'
+							},
+							scaleLabel: {
+								display: true,
+								labelString: 'Date'
+							}
+						}],
+						yAxes: [{
+							type: 'linear',
+							display: true,
+							position: 'left',
+							id: 'temp-axis',
+						}],
+					}
+				}
+			});
+		</script>
+
 	</body>
 
 </html>
