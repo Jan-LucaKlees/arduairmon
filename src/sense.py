@@ -22,8 +22,12 @@ while 1 :
   hum_2 = data["sensors"]["rel_hum_2"]["value"]
   hum = ( hum_1 + hum_2 ) / 2
 
+  vcc = data["sensors"]["vcc"]["value"]
+
   new_measurement = Measurement(
     temperature = temp,
-    relative_humidity = hum)
+    relative_humidity = hum,
+    vcc = vcc,
+  )
 
   new_measurement.save( force_insert=True )
