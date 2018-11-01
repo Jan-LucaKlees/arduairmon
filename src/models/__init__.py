@@ -1,2 +1,2 @@
-from .measurements import Measurement
+from .measurement import Measurement
 
