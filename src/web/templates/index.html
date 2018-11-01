@@ -4,11 +4,8 @@
 		<title>Arduairmon</title>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-	</head>
-
-	<body>
-		<canvas id="temperature_and_humidity"></canvas>
 		<script>
+			// I am just here to define Pythons None value as null in js, I know, hacky it is
 			var None = null;
 			var rawData = {
 				date: {{ raw_data.date |safe }},
@@ -17,15 +14,20 @@
 				vcc: {{ raw_data.vcc | safe }}
 			};
 
-			var timeFormat = 'YYYY-MM-DD HH:mm:ss.SSSSSS';
+			var timeFormat = '{{ DATE_FORMAT }}';
+		</script>
+	</head>
 
+	<body>
+		<canvas id="temperature_and_humidity"></canvas>
+		<script>
 			var ctx = document.getElementById('temperature_and_humidity').getContext('2d');
-
 			var chart = new Chart(ctx, {
 				type: 'line',
 				data: {
 					labels: rawData.date,
 					datasets: [{
+						name: 'temperature',
 						label: "Temperature",
 						fill: false,
 						backgroundColor: 'rgb(255, 99, 132)',
@@ -37,6 +39,7 @@
 						lineTension: 0,
 						borderWidth: 2
 					},{
+						name: 'humidity',
 						label: "relative Humidity",
 						fill: false,
 						backgroundColor: 'rgb(99, 132, 255)',
@@ -98,6 +101,30 @@
 					}
 				}
 			});
+
+			setInterval( updateChart , 60000 );
+
+			function updateChart() {
+				from = chart.data.labels[ chart.data.labels.length -1 ];
+				url = window.location.protocol + '//' + window.location.host + '/json?from=' + from;
+
+				fetch(url, {
+					method: 'get'
+				})
+					.then(response => response.json())
+					.then(jsonData => {
+						chart.data.labels = chart.data.labels.concat( jsonData.date );
+						chart.data.datasets.forEach((dataset) => {
+							console.log( dataset.data );
+							dataset.data = dataset.data.concat( jsonData[ dataset.name ] );
+							console.log( dataset.data );
+						});
+						chart.update();
+					})
+					.catch(err => {
+						console.error( err );
+					})
+			}
 		</script>
 	</body>
 
