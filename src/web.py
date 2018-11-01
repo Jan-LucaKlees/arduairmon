@@ -9,16 +9,18 @@ app = Flask("airmon", template_folder="./web/templates")
 def index():
   q = Measurement.select()
 
-  count = q.count()
-
-  dates = []
-  temperatures = []
-  relative_humidities = []
+  raw_data = {
+    'date': [],
+    'temperature': [],
+    'humidity': [],
+    'vcc': []
+  }
 
   for measurement in q:
-    dates.append( str( measurement.created_at ) )
-    temperatures.append( measurement.temperature )
-    relative_humidities.append( measurement.relative_humidity )
+    raw_data['date'].append( str( measurement.created_at ) )
+    raw_data['temperature'].append( measurement.temperature )
+    raw_data['humidity'].append( measurement.relative_humidity )
+    raw_data['vcc'].append( measurement.vcc )
 
-  return render_template('index.html', count = count, temps=temperatures, hums=relative_humidities, dates=dates )
+  return render_template('index.html', raw_data = raw_data )
 

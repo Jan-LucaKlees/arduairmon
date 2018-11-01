@@ -1,29 +1,36 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Title of the document</title>
+		<title>Arduairmon</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 	</head>
 
 	<body>
-		<canvas id="myChart"></canvas>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+		<canvas id="temperature_and_humidity"></canvas>
 		<script>
-		var timeFormat = 'YYYY-MM-DD HH:mm:ss.SSSSSS';
-			var ctx = document.getElementById('myChart').getContext('2d');
-			var chart = new Chart(ctx, {
-				// The type of chart we want to create
-				type: 'line',
+			var None = null;
+			var rawData = {
+				date: {{ raw_data.date |safe }},
+				temperature: {{ raw_data.temperature | safe }},
+				humidity: {{ raw_data.humidity | safe }},
+				vcc: {{ raw_data.vcc | safe }}
+			};
 
-				// The data for our dataset
+			var timeFormat = 'YYYY-MM-DD HH:mm:ss.SSSSSS';
+
+			var ctx = document.getElementById('temperature_and_humidity').getContext('2d');
+
+			var chart = new Chart(ctx, {
+				type: 'line',
 				data: {
-					labels: {{ dates | safe }},
+					labels: rawData.date,
 					datasets: [{
 						label: "Temperature",
 						fill: false,
 						backgroundColor: 'rgb(255, 99, 132)',
 						borderColor: 'rgb(255, 99, 132)',
-						data: {{ temps }},
+						data: rawData.temperature,
 						yAxisID: 'temp-axis',
 						pointRadius: 0,
 						fill: false,
@@ -34,7 +41,7 @@
 						fill: false,
 						backgroundColor: 'rgb(99, 132, 255)',
 						borderColor: 'rgb(99, 132, 255)',
-						data: {{ hums }},
+						data: rawData.humidity,
 						yAxisID: 'hum-axis',
 						pointRadius: 0,
 						fill: false,
