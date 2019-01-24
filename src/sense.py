@@ -14,20 +14,17 @@ while 1 :
 
   print( data )
 
-  temp_1 = data["sensors"]["temp_1"]["value"]
-  temp_2 = data["sensors"]["temp_2"]["value"]
-  temp = ( temp_1 + temp_2 ) / 2
+  temp = data["sensors"]["temp"]["value"]
 
-  hum_1 = data["sensors"]["rel_hum_1"]["value"]
-  hum_2 = data["sensors"]["rel_hum_2"]["value"]
-  hum = ( hum_1 + hum_2 ) / 2
+  hum = data["sensors"]["rel_hum"]["value"]
 
-  vcc = data["sensors"]["vcc"]["value"]
+  # vcc = data["sensors"]["vcc"]["value"]
 
   new_measurement = Measurement(
     temperature = temp,
     relative_humidity = hum,
-    vcc = vcc,
+    # vcc = vcc,
   )
 
   new_measurement.save( force_insert=True )
+
